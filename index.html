@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7c1d1d">
+<title>بطولة مفردات الثورة والتاريخ</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: radial-gradient(ellipse at top, #2d1b4e 0%, #150a28 60%, #0a0515 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  #stars { position: fixed; inset:0; z-index:0; pointer-events:none; }
+  .star { position:absolute; background:#fff; border-radius:50%; opacity:.7; animation: twinkle 3s infinite ease-in-out; }
+  @keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+  .wrap { position:relative; z-index:1; max-width:520px; margin:0 auto; padding:24px 16px 60px; min-height:100vh; display:flex; flex-direction:column; }
+  h1 { font-size:1.5rem; text-align:center; margin-bottom:6px; background:linear-gradient(90deg,#c084fc,#f0abfc); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:#c9b8e8; font-size:.9rem; margin-bottom:20px; }
+  .card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:20px; margin-bottom:16px; backdrop-filter: blur(6px); }
+  button { font-family:'Tajawal',sans-serif; font-weight:700; font-size:1rem; border:none; border-radius:14px; padding:14px 18px; cursor:pointer; width:100%; margin-top:10px; transition:.15s; }
+  .btn-primary { background:linear-gradient(90deg,#a855f7,#ec4899); color:#fff; box-shadow:0 4px 20px rgba(168,85,247,.4); }
+  .btn-primary:active { transform:scale(.97); }
+  .btn-primary:disabled { opacity:.6; }
+  .btn-secondary { background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
+  input { font-family:'Tajawal',sans-serif; width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#fff; font-size:1rem; margin-top:8px; }
+  input::placeholder { color:#9d8cc4; }
+  label { font-size:.85rem; color:#d8cdf0; display:block; margin-top:12px; }
+  .code-big { font-family:'Poppins',sans-serif; font-size:2.6rem; font-weight:800; text-align:center; letter-spacing:6px; color:#f0abfc; margin:10px 0; }
+  .player-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .chip { background:rgba(168,85,247,.25); border:1px solid rgba(168,85,247,.5); padding:6px 14px; border-radius:20px; font-size:.85rem; }
+  .qopt { display:block; width:100%; text-align:right; padding:16px; margin-top:10px; border-radius:14px; border:2px solid rgba(255,255,255,.15); background:rgba(255,255,255,.07); color:#fff; font-size:1rem; cursor:pointer; }
+  .qopt.picked { border-color:#c084fc; background:rgba(192,132,252,.25); }
+  .qopt:disabled { opacity:.85; }
+  .leader-row { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:rgba(255,255,255,.06); border-radius:12px; margin-top:8px; }
+  .leader-row.me { border:1.5px solid #c084fc; background:rgba(192,132,252,.15); }
+  .leader-row .rank { color:#f0abfc; font-weight:800; width:28px; }
+  .timer-ring { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-family:'Poppins',sans-serif; font-size:1.4rem; font-weight:800; border:4px solid rgba(255,255,255,.15); }
+  .center { text-align:center; }
+  .muted { color:#a898cc; font-size:.85rem; text-align:center; }
+  .qcount { text-align:center; color:#c9b8e8; font-size:.85rem; margin-bottom:8px; font-family:'Poppins',sans-serif; }
+  .level-badge { display:inline-block; padding:6px 18px; border-radius:20px; font-weight:800; font-size:1rem; margin-bottom:10px; }
+  .level-bronze { background:rgba(205,127,50,.25); color:#e0a370; border:1.5px solid #cd7f32; }
+  .level-silver { background:rgba(192,192,192,.2); color:#e8e8e8; border:1.5px solid #c0c0c0; }
+  .level-gold { background:rgba(255,215,0,.2); color:#ffd700; border:1.5px solid #ffd700; }
+  .trophy { font-size:5rem; text-align:center; margin:10px 0; animation: bounce 1.2s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .winner-name { text-align:center; font-size:1.6rem; font-weight:900; background:linear-gradient(90deg,#ffd700,#ffb347); -webkit-background-clip:text; background-clip:text; color:transparent; margin:8px 0; }
+  .confetti-piece { position:fixed; width:9px; height:9px; top:-10px; z-index:999; pointer-events:none; border-radius:2px; animation: confettiFall linear forwards; }
+  @keyframes confettiFall { to { transform:translateY(105vh) rotate(720deg); opacity:0; } }
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap" id="app"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, onValue, off } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCeicQ4Tf9xBvlu_jzCIMEgGx76S1Hygao",
+  authDomain: "quiz-tournament-fd1da.firebaseapp.com",
+  databaseURL: "https://quiz-tournament-fd1da-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "quiz-tournament-fd1da",
+  storageBucket: "quiz-tournament-fd1da.firebasestorage.app",
+  messagingSenderId: "192958115383",
+  appId: "1:192958115383:web:2fff87f928cf6428f319b2"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+// ---------- stars background ----------
+const starsEl = document.getElementById('stars');
+for (let i=0;i<60;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*2+1;
+  s.style.width=s.style.height=size+'px';
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*100+'%';
+  s.style.animationDelay=(Math.random()*3)+'s';
+  starsEl.appendChild(s);
+}
+
+// ---------- full word bank (verbs + nouns + adjectives) ----------
+const GROUPS = [
+  {key:'verbes', name:'اختبار المجموعة 1: الأفعال', emoji:'⚔️'},
+  {key:'noms', name:'اختبار المجموعة 2: الأسماء', emoji:'📜'},
+  {key:'adjectifs', name:'اختبار المجموعة 3: الصفات', emoji:'🦁'},
+  {key:'all', name:'اختبار المجموعة 4: الشامل (الكل)', emoji:'🎓'}
+];
+const WORD_GROUPS = {"verbes": [{"fr": "Défendre", "ar": "دافع"}, {"fr": "Combattre", "ar": "كافح"}, {"fr": "Lutter", "ar": "حارب"}, {"fr": "Rejoindre", "ar": "التحق"}, {"fr": "Résister", "ar": "قاوم وصمد"}, {"fr": "Obtenir", "ar": "تحصل"}, {"fr": "Mobiliser", "ar": "جند"}, {"fr": "Défier", "ar": "تحدى"}, {"fr": "Massacrer", "ar": "قام بمجزرة"}, {"fr": "Libérer", "ar": "حرر"}, {"fr": "Mourir / Décéder", "ar": "مات / توفي"}, {"fr": "Naître", "ar": "ولد"}, {"fr": "Mener", "ar": "قاد"}, {"fr": "Coloniser", "ar": "استعمر"}, {"fr": "Tuer", "ar": "قتل"}, {"fr": "Torturer", "ar": "عذب"}, {"fr": "Organiser", "ar": "نظم"}, {"fr": "Eclater", "ar": "فجر"}, {"fr": "Se déclencher", "ar": "اندلع"}, {"fr": "Proclamer", "ar": "أعلن"}, {"fr": "Revendiquer", "ar": "طالب"}, {"fr": "Fonder", "ar": "أسس"}, {"fr": "Empêcher", "ar": "منع"}, {"fr": "Attaquer", "ar": "هاجم"}, {"fr": "Fêter", "ar": "احتفل"}, {"fr": "Commémorer", "ar": "أحيا ذكرى"}, {"fr": "Envahir", "ar": "غزى"}, {"fr": "Détruire", "ar": "هدم"}, {"fr": "Mettre fin", "ar": "وضع حد ل"}, {"fr": "S'unir", "ar": "اتحد"}, {"fr": "Réprimer", "ar": "قمع"}, {"fr": "Arracher", "ar": "انتزع"}, {"fr": "Acquérir", "ar": "اكتسب"}, {"fr": "Se venger", "ar": "ينتقم"}, {"fr": "Tomber en martyr", "ar": "استشهد"}], "noms": [{"fr": "Histoire", "ar": "تاريخ"}, {"fr": "Gloire", "ar": "مجد"}, {"fr": "Evènements", "ar": "أحداث"}, {"fr": "Hommage", "ar": "تكريم"}, {"fr": "Martyr", "ar": "شهيد"}, {"fr": "Combattant / soldat", "ar": "محارب / جندي"}, {"fr": "Armée", "ar": "جيش"}, {"fr": "Arme", "ar": "سلاح"}, {"fr": "Guerre", "ar": "حرب"}, {"fr": "Bataille", "ar": "معركة"}, {"fr": "Révolution", "ar": "ثورة"}, {"fr": "Indépendance", "ar": "استقلال"}, {"fr": "Liberté", "ar": "حرية"}, {"fr": "Libération", "ar": "تحرير"}, {"fr": "Colonisation", "ar": "استعمار"}, {"fr": "Colonisateur", "ar": "مستعمر"}, {"fr": "Colonie", "ar": "مستعمرة"}, {"fr": "Héros / Héroïne", "ar": "بطل / بطلة"}, {"fr": "Figure / Personnalité", "ar": "شخصية"}, {"fr": "Symbole", "ar": "رمز"}, {"fr": "Ennemi", "ar": "عدو"}, {"fr": "Maquis", "ar": "أحراش"}, {"fr": "Front", "ar": "جبهة"}, {"fr": "Sacrifices", "ar": "تضحيات"}, {"fr": "Sang", "ar": "دم"}, {"fr": "Patrie", "ar": "وطن"}, {"fr": "Force", "ar": "قوة"}, {"fr": "Résistance", "ar": "مقاومة"}, {"fr": "Massacres", "ar": "مجازر"}, {"fr": "Torture", "ar": "تعذيب"}, {"fr": "Courage", "ar": "شجاعة"}, {"fr": "Bravoure", "ar": "اقدام وجسارة"}, {"fr": "Insurrection", "ar": "تمرد"}, {"fr": "Autorité", "ar": "نفوذ"}, {"fr": "Pouvoir", "ar": "سلطة"}, {"fr": "Mouvement", "ar": "حركة"}, {"fr": "Patriotisme", "ar": "وطنية"}, {"fr": "Chef / commandant", "ar": "قائد / كوموندان"}, {"fr": "Mérite", "ar": "استحقاق"}, {"fr": "Champ d'honneur", "ar": "ميدان الشرف"}, {"fr": "Manifestations", "ar": "مظاهرات"}, {"fr": "Rangs", "ar": "صفوف"}, {"fr": "Déclenchement", "ar": "اندلاع"}, {"fr": "Epoque = période", "ar": "حقبة / بيريود"}, {"fr": "Guillotine", "ar": "مقصلة"}, {"fr": "Attaque", "ar": "هجوم"}, {"fr": "Cessez-le-feu", "ar": "وقف اطلاق النار"}, {"fr": "Mémoire", "ar": "ذاكرة"}, {"fr": "Victoire", "ar": "نصر"}], "adjectifs": [{"fr": "National", "ar": "وطني"}, {"fr": "Historique", "ar": "تاريخي"}, {"fr": "Populaire", "ar": "شعبي"}, {"fr": "Courageux / Brave", "ar": "شجاع"}, {"fr": "Fidèle", "ar": "وفي"}, {"fr": "Emblématique", "ar": "رمزي"}, {"fr": "Révolutionnaire", "ar": "ثوري"}, {"fr": "Libre", "ar": "حر"}, {"fr": "Indépendant", "ar": "مستقل"}, {"fr": "Atroce", "ar": "فظيع"}, {"fr": "Glorieux", "ar": "مجيد"}, {"fr": "Héroïque", "ar": "بطولي"}, {"fr": "Fort", "ar": "قوي"}, {"fr": "Colonial", "ar": "استعماري"}, {"fr": "Légendaire", "ar": "اسطوري"}, {"fr": "Mémorable", "ar": "يبقى في الذاكرة"}, {"fr": "Indomptable", "ar": "لا يقهر"}, {"fr": "Irrésistible", "ar": "لا يقاوم"}, {"fr": "Victorieux", "ar": "انتصاري"}, {"fr": "Militaire", "ar": "عسكري"}, {"fr": "Résistant", "ar": "مقاوم"}, {"fr": "Assassin", "ar": "سفاح وقاتل"}], "all": [{"fr": "Défendre", "ar": "دافع"}, {"fr": "Combattre", "ar": "كافح"}, {"fr": "Lutter", "ar": "حارب"}, {"fr": "Rejoindre", "ar": "التحق"}, {"fr": "Résister", "ar": "قاوم وصمد"}, {"fr": "Obtenir", "ar": "تحصل"}, {"fr": "Mobiliser", "ar": "جند"}, {"fr": "Défier", "ar": "تحدى"}, {"fr": "Massacrer", "ar": "قام بمجزرة"}, {"fr": "Libérer", "ar": "حرر"}, {"fr": "Mourir / Décéder", "ar": "مات / توفي"}, {"fr": "Naître", "ar": "ولد"}, {"fr": "Mener", "ar": "قاد"}, {"fr": "Coloniser", "ar": "استعمر"}, {"fr": "Tuer", "ar": "قتل"}, {"fr": "Torturer", "ar": "عذب"}, {"fr": "Organiser", "ar": "نظم"}, {"fr": "Eclater", "ar": "فجر"}, {"fr": "Se déclencher", "ar": "اندلع"}, {"fr": "Proclamer", "ar": "أعلن"}, {"fr": "Revendiquer", "ar": "طالب"}, {"fr": "Fonder", "ar": "أسس"}, {"fr": "Empêcher", "ar": "منع"}, {"fr": "Attaquer", "ar": "هاجم"}, {"fr": "Fêter", "ar": "احتفل"}, {"fr": "Commémorer", "ar": "أحيا ذكرى"}, {"fr": "Envahir", "ar": "غزى"}, {"fr": "Détruire", "ar": "هدم"}, {"fr": "Mettre fin", "ar": "وضع حد ل"}, {"fr": "S'unir", "ar": "اتحد"}, {"fr": "Réprimer", "ar": "قمع"}, {"fr": "Arracher", "ar": "انتزع"}, {"fr": "Acquérir", "ar": "اكتسب"}, {"fr": "Se venger", "ar": "ينتقم"}, {"fr": "Tomber en martyr", "ar": "استشهد"}, {"fr": "Histoire", "ar": "تاريخ"}, {"fr": "Gloire", "ar": "مجد"}, {"fr": "Evènements", "ar": "أحداث"}, {"fr": "Hommage", "ar": "تكريم"}, {"fr": "Martyr", "ar": "شهيد"}, {"fr": "Combattant / soldat", "ar": "محارب / جندي"}, {"fr": "Armée", "ar": "جيش"}, {"fr": "Arme", "ar": "سلاح"}, {"fr": "Guerre", "ar": "حرب"}, {"fr": "Bataille", "ar": "معركة"}, {"fr": "Révolution", "ar": "ثورة"}, {"fr": "Indépendance", "ar": "استقلال"}, {"fr": "Liberté", "ar": "حرية"}, {"fr": "Libération", "ar": "تحرير"}, {"fr": "Colonisation", "ar": "استعمار"}, {"fr": "Colonisateur", "ar": "مستعمر"}, {"fr": "Colonie", "ar": "مستعمرة"}, {"fr": "Héros / Héroïne", "ar": "بطل / بطلة"}, {"fr": "Figure / Personnalité", "ar": "شخصية"}, {"fr": "Symbole", "ar": "رمز"}, {"fr": "Ennemi", "ar": "عدو"}, {"fr": "Maquis", "ar": "أحراش"}, {"fr": "Front", "ar": "جبهة"}, {"fr": "Sacrifices", "ar": "تضحيات"}, {"fr": "Sang", "ar": "دم"}, {"fr": "Patrie", "ar": "وطن"}, {"fr": "Force", "ar": "قوة"}, {"fr": "Résistance", "ar": "مقاومة"}, {"fr": "Massacres", "ar": "مجازر"}, {"fr": "Torture", "ar": "تعذيب"}, {"fr": "Courage", "ar": "شجاعة"}, {"fr": "Bravoure", "ar": "اقدام وجسارة"}, {"fr": "Insurrection", "ar": "تمرد"}, {"fr": "Autorité", "ar": "نفوذ"}, {"fr": "Pouvoir", "ar": "سلطة"}, {"fr": "Mouvement", "ar": "حركة"}, {"fr": "Patriotisme", "ar": "وطنية"}, {"fr": "Chef / commandant", "ar": "قائد / كوموندان"}, {"fr": "Mérite", "ar": "استحقاق"}, {"fr": "Champ d'honneur", "ar": "ميدان الشرف"}, {"fr": "Manifestations", "ar": "مظاهرات"}, {"fr": "Rangs", "ar": "صفوف"}, {"fr": "Déclenchement", "ar": "اندلاع"}, {"fr": "Epoque = période", "ar": "حقبة / بيريود"}, {"fr": "Guillotine", "ar": "مقصلة"}, {"fr": "Attaque", "ar": "هجوم"}, {"fr": "Cessez-le-feu", "ar": "وقف اطلاق النار"}, {"fr": "Mémoire", "ar": "ذاكرة"}, {"fr": "Victoire", "ar": "نصر"}, {"fr": "National", "ar": "وطني"}, {"fr": "Historique", "ar": "تاريخي"}, {"fr": "Populaire", "ar": "شعبي"}, {"fr": "Courageux / Brave", "ar": "شجاع"}, {"fr": "Fidèle", "ar": "وفي"}, {"fr": "Emblématique", "ar": "رمزي"}, {"fr": "Révolutionnaire", "ar": "ثوري"}, {"fr": "Libre", "ar": "حر"}, {"fr": "Indépendant", "ar": "مستقل"}, {"fr": "Atroce", "ar": "فظيع"}, {"fr": "Glorieux", "ar": "مجيد"}, {"fr": "Héroïque", "ar": "بطولي"}, {"fr": "Fort", "ar": "قوي"}, {"fr": "Colonial", "ar": "استعماري"}, {"fr": "Légendaire", "ar": "اسطوري"}, {"fr": "Mémorable", "ar": "يبقى في الذاكرة"}, {"fr": "Indomptable", "ar": "لا يقهر"}, {"fr": "Irrésistible", "ar": "لا يقاوم"}, {"fr": "Victorieux", "ar": "انتصاري"}, {"fr": "Militaire", "ar": "عسكري"}, {"fr": "Résistant", "ar": "مقاوم"}, {"fr": "Assassin", "ar": "سفاح وقاتل"}]};
+let selectedGroupKey = 'verbes';
+
+const LEVELS = [
+  {key:'bronze', name:'المستوى البرونزي', emoji:'🥉', cls:'level-bronze'},
+  {key:'silver', name:'المستوى الفضي', emoji:'🥈', cls:'level-silver'},
+  {key:'gold',   name:'المستوى الذهبي', emoji:'🥇', cls:'level-gold'}
+];
+
+// ---------- state ----------
+let role = null;
+let roomCode = null;
+let playerName = null;
+let campaign = null;
+let answered = false;
+let roomListener = null; // {path, cb} to detach later
+let lastSeenIndex = -1, lastSeenState = null, lastSeenLevel = -1;
+let scoredQuestions = new Set();
+
+function genCode(){
+  const letters='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let c='';
+  for(let i=0;i<4;i++) c+=letters[Math.floor(Math.random()*letters.length)];
+  return c;
+}
+function render(html){ document.getElementById('app').innerHTML = html; }
+function detachRoomListener(){
+  if(roomListener){ off(roomListener.ref, 'value', roomListener.cb); roomListener=null; }
+}
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function makeQuestion(w, poolWords){
+  const pool = poolWords.filter(x=>x.ar!==w.ar).map(x=>x.ar);
+  const distractors = shuffleArr(pool).slice(0,3);
+  const options = shuffleArr([w.ar, ...distractors]);
+  const correct = options.indexOf(w.ar);
+  return { q: `ما معنى ${w.fr}؟`, word: w.fr, options, correct };
+}
+function generateCampaign(groupKey){
+  const groupWords = WORD_GROUPS[groupKey];
+  const shuffled = shuffleArr(groupWords);
+  const n = shuffled.length;
+  const base = Math.floor(n/3);
+  const rem = n - base*3;
+  const sizes = [base + (rem>0?1:0), base + (rem>1?1:0), base];
+  const campaignObj = {};
+  let idx = 0;
+  LEVELS.forEach((lvl, i)=>{
+    const words = shuffled.slice(idx, idx+sizes[i]);
+    idx += sizes[i];
+    campaignObj[lvl.key] = words.map(w=> makeQuestion(w, groupWords));
+  });
+  return campaignObj;
+}
+
+// ---------- audio: speech + tones ----------
+let cachedVoices = [];
+function loadVoices(){ if('speechSynthesis' in window) cachedVoices = window.speechSynthesis.getVoices(); }
+if('speechSynthesis' in window){ loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+function unlockAudio(){
+  try{ getAudioCtx(); }catch(e){}
+  if('speechSynthesis' in window){
+    try{ const u = new SpeechSynthesisUtterance(' '); u.volume=0; window.speechSynthesis.speak(u); }catch(e){}
+  }
+}
+function speakWord(text){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    const frVoice = cachedVoices.find(v=>v.lang && v.lang.toLowerCase().startsWith('fr'));
+    if(frVoice) u.voice = frVoice;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx){ try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ return null; } }
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playTone(freq, start, duration, type='sine', vol=0.22){
+  const ctx = getAudioCtx(); if(!ctx) return;
+  const osc = ctx.createOscillator(); const gain = ctx.createGain();
+  osc.type = type; osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, ctx.currentTime+start);
+  gain.gain.linearRampToValueAtTime(vol, ctx.currentTime+start+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+start+duration);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(ctx.currentTime+start); osc.stop(ctx.currentTime+start+duration+0.05);
+}
+function playCorrectSound(){ playTone(523.25,0,0.16,'sine',0.22); playTone(659.25,0.09,0.16,'sine',0.22); playTone(783.99,0.18,0.28,'sine',0.24); }
+function playWrongSound(){ playTone(220,0,0.18,'sawtooth',0.16); playTone(164.81,0.12,0.28,'sawtooth',0.16); }
+function launchConfetti(){
+  const colors = ['#ffd700','#c084fc','#f0abfc','#4ade80','#60a5fa','#f87171'];
+  for(let i=0;i<70;i++){
+    setTimeout(()=>{
+      const p = document.createElement('div');
+      p.className='confetti-piece';
+      p.style.left = Math.random()*100+'%';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.animationDuration = (Math.random()*1.5+2)+'s';
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(), 3600);
+    }, i*25);
+  }
+}
+
+function showFbError(e, retryFn){
+  render(`
+    <div class="card center">
+      <div style="color:#f87171;font-weight:700;margin-bottom:10px;">⚠️ وقع خطأ فالاتصال بقاعدة البيانات</div>
+      <div class="muted" style="margin-bottom:10px;">${e && e.message ? e.message : e}</div>
+      <button class="btn-primary" id="retryBtn">🔄 إعادة المحاولة</button>
+      <button class="btn-secondary" onclick="window.renderHome()">رجوع للبداية</button>
+    </div>
+  `);
+  document.getElementById('retryBtn').onclick = retryFn;
+}
+
+function renderHome(){
+  detachRoomListener();
+  role=null; roomCode=null;
+  render(`
+    <h1>🏆 بطولة مفردات الثورة والتاريخ 📜</h1>
+    <div class="sub">اختر مجموعة (أفعال / أسماء / صفات / الكل) — 3 مستويات موزعة على كامل كلمات المجموعة، بلا وقت محدد</div>
+    <div class="card">
+      <button class="btn-primary" onclick="window.goHostSetup()">👩‍🏫 أنا الأستاذ - أنشئ بطولة</button>
+      <button class="btn-secondary" onclick="window.goJoin()">🙋 أنا تلميذ - انضم للبطولة</button>
+    </div>
+  `);
+}
+
+// ================= HOST =================
+function goHostSetup(){
+  role='host';
+  render(`
+    <h1>اختر المجموعة</h1>
+    <div class="sub">شنو المجموعة لي بغيتي تلعب بيها البطولة؟</div>
+    <div class="card">
+      ${GROUPS.map(g=>`
+        <button class="btn-secondary" style="text-align:right;display:flex;justify-content:space-between;align-items:center;" onclick="window.goHostConfirm('${g.key}')">
+          <span>${g.emoji} ${g.name}</span>
+          <span class="muted">(${WORD_GROUPS[g.key].length} كلمة)</span>
+        </button>
+      `).join('')}
+    </div>
+    <button class="btn-secondary" onclick="window.renderHome()">رجوع</button>
+  `);
+}
+
+function goHostConfirm(groupKey){
+  selectedGroupKey = groupKey;
+  const g = GROUPS.find(x=>x.key===groupKey);
+  render(`
+    <h1>بطولة جديدة</h1>
+    <div class="sub">${g.emoji} ${g.name} (${WORD_GROUPS[groupKey].length} كلمة) — 3 مستويات موزعة على كامل الكلمات</div>
+    <div class="card center">
+      <div id="setupError" class="muted" style="color:#f87171;min-height:18px;"></div>
+      <button class="btn-primary" onclick="window.createRoom()">إنشاء البطولة ▶</button>
+    </div>
+    <button class="btn-secondary" onclick="window.goHostSetup()">رجوع لاختيار المجموعة</button>
+  `);
+}
+
+async function createRoom(){
+  const errEl = document.getElementById('setupError');
+  const btn = document.querySelector('#app .btn-primary');
+  errEl.textContent = '';
+  if(btn){ btn.textContent = 'كنجهز البطولة...'; btn.disabled = true; }
+  try{
+    roomCode = genCode();
+    campaign = generateCampaign(selectedGroupKey);
+    scoredQuestions = new Set();
+    await set(ref(db, 'campaigns_hist/'+roomCode), campaign);
+    await set(ref(db, 'rooms_hist/'+roomCode), { levelIdx:0, currentIndex:-1, state:'lobby', ended:false });
+    await set(ref(db, 'scores_hist/'+roomCode), {});
+    renderHostLobby();
+  }catch(e){
+    errEl.textContent = '⚠️ وقع خطأ: ' + (e && e.message ? e.message : e);
+    if(btn){ btn.textContent = 'إنشاء البطولة ▶'; btn.disabled = false; }
+  }
+}
+
+function renderHostLobby(){
+  render(`
+    <h1>غرفة البطولة</h1>
+    <div class="card center">
+      <div class="muted">كود الغرفة - عطيه للتلاميذ</div>
+      <div class="code-big">${roomCode}</div>
+      <div class="muted" id="playerCount">فانتظار التلاميذ...</div>
+      <div class="player-list" id="playerList"></div>
+      <button class="btn-primary" onclick="window.hostStartLevel(0)">🚀 بدا البطولة (المستوى البرونزي)</button>
+    </div>
+  `);
+  onValue(ref(db, 'joins_hist/'+roomCode), (snap)=>{
+    const val = snap.val() || {};
+    const names = Object.keys(val);
+    const el = document.getElementById('playerList');
+    const cnt = document.getElementById('playerCount');
+    if(el) el.innerHTML = names.map(n=>`<div class="chip">${n}</div>`).join('');
+    if(cnt) cnt.textContent = names.length + ' تلميذ(ة) دخلو';
+  });
+}
+
+async function hostStartLevel(levelIdx){
+  await hostAdvanceToQuestion(levelIdx, 0);
+}
+
+async function hostAdvanceToQuestion(levelIdx, idx){
+  try{
+    const lvl = LEVELS[levelIdx];
+    const qs = campaign[lvl.key];
+    if(idx >= qs.length){
+      await update(ref(db, 'rooms_hist/'+roomCode), { levelIdx, currentIndex:idx, state:'levelResult', ended:false });
+      await renderLevelResult(levelIdx, true);
+      return;
+    }
+    await update(ref(db, 'rooms_hist/'+roomCode), { levelIdx, currentIndex:idx, state:'question', ended:false });
+    renderHostQuestionLive(levelIdx, idx);
+  }catch(e){
+    showFbError(e, ()=>hostAdvanceToQuestion(levelIdx, idx));
+  }
+}
+
+function renderHostQuestionLive(levelIdx, idx){
+  const lvl = LEVELS[levelIdx];
+  const q = campaign[lvl.key][idx];
+  render(`
+    <div class="center"><span class="level-badge ${lvl.cls}">${lvl.emoji} ${lvl.name}</span></div>
+    <div class="qcount">سؤال ${idx+1} / ${campaign[lvl.key].length}</div>
+    <div class="card center">
+      <div style="font-size:1.2rem;font-weight:700;">${q.q}</div>
+    </div>
+    <div class="card center">
+      <div class="muted" id="answerCount">كنتسناو التلاميذ يجاوبو...</div>
+      <button class="btn-primary" id="revealBtn" disabled onclick="window.hostRevealAndWait(${levelIdx}, ${idx})">عرض النتيجة ▶</button>
+      <button class="btn-secondary" style="font-size:.8rem;padding:8px;" onclick="window.hostRevealAndWait(${levelIdx}, ${idx})">تجاوز وعرض النتيجة الآن (إذا كان تلميذ غايب) ⏭</button>
+    </div>
+    <div class="card">
+      <div class="sub" style="margin-bottom:4px;">النقط الحية 👁️ (التلاميذ ما كيشوفوهاش دابا)</div>
+      <div id="liveBoard"></div>
+    </div>
+  `);
+  // live join count
+  onValue(ref(db, 'joins_hist/'+roomCode), (snap)=>{
+    const total = Object.keys(snap.val()||{}).length;
+    onValue(ref(db, 'answers_hist/'+roomCode+'/'+lvl.key+'/'+idx), (asnap)=>{
+      const answeredCount = Object.keys(asnap.val()||{}).length;
+      const cntEl = document.getElementById('answerCount');
+      const btn = document.getElementById('revealBtn');
+      if(cntEl) cntEl.textContent = `${answeredCount} / ${total} جاوبو`;
+      if(btn){
+        if(total>0 && answeredCount>=total){ btn.disabled=false; btn.textContent='✅ الكل جاوب - عرض النتيجة ▶'; }
+        else { btn.disabled=true; btn.textContent='عرض النتيجة ▶'; }
+      }
+    }, {onlyOnce:false});
+  }, {onlyOnce:false});
+  onValue(ref(db, 'scores_hist/'+roomCode), (snap)=>{
+    const scores = snap.val()||{};
+    const ranked = Object.entries(scores).sort((a,b)=>(b[1][lvl.key]||0)-(a[1][lvl.key]||0));
+    const el = document.getElementById('liveBoard');
+    if(!el) return;
+    el.innerHTML = ranked.length
+      ? ranked.map((r,i)=>`<div class="leader-row"><span><span class="rank">${i+1}.</span>${r[0]}</span><b>${Math.min(r[1][lvl.key]||0, campaign[lvl.key].length)} / ${campaign[lvl.key].length}</b></div>`).join('')
+      : '<div class="muted">مازال حتى واحد ما جاوب</div>';
+  });
+}
+
+async function hostRevealAndWait(levelIdx, idx){
+  const btns = document.querySelectorAll('#app button');
+  btns.forEach(b=>b.disabled=true);
+  try{
+    const lvl = LEVELS[levelIdx];
+    const q = campaign[lvl.key][idx];
+    const scoreKey = lvl.key+':'+idx;
+    const scoresSnap = await get(ref(db, 'scores_hist/'+roomCode));
+    const scores = scoresSnap.val() || {};
+    if(!scoredQuestions.has(scoreKey)){
+      const ansSnap = await get(ref(db, 'answers_hist/'+roomCode+'/'+lvl.key+'/'+idx));
+      const answers = ansSnap.val() || {};
+      for(const name of Object.keys(answers)){
+        const ans = answers[name];
+        if(!scores[name]) scores[name] = {bronze:0,silver:0,gold:0};
+        if(ans.choice === q.correct) scores[name][lvl.key] = (scores[name][lvl.key]||0) + 1;
+      }
+      await set(ref(db, 'scores_hist/'+roomCode), scores);
+      scoredQuestions.add(scoreKey);
+    }
+    await update(ref(db, 'rooms_hist/'+roomCode), { levelIdx, currentIndex:idx, state:'reveal', ended:false });
+
+    const ranked = Object.entries(scores).sort((a,b)=>(b[1][lvl.key]||0)-(a[1][lvl.key]||0));
+    const isLastQ = idx >= campaign[lvl.key].length-1;
+    render(`
+      <div class="center"><span class="level-badge ${lvl.cls}">${lvl.emoji} ${lvl.name}</span></div>
+      <div class="qcount">سؤال ${idx+1} / ${campaign[lvl.key].length}</div>
+      <h1>الجواب الصحيح ✅</h1>
+      <div class="card center">
+        <div style="font-weight:700;margin-bottom:8px;">${q.q}</div>
+        <div style="color:#4ade80;font-weight:800;font-size:1.1rem;">${q.options[q.correct]}</div>
+      </div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:4px;">الترتيب الحالي فهاد المستوى</div>
+        ${ranked.map((r,i)=>`<div class="leader-row"><span><span class="rank">${i+1}.</span>${r[0]}</span><b>${Math.min(r[1][lvl.key]||0, campaign[lvl.key].length)} / ${campaign[lvl.key].length}</b></div>`).join('') || '<div class="muted">مازال حتى واحد ما جاوب</div>'}
+        <button class="btn-primary" onclick="window.hostAdvanceToQuestion(${levelIdx}, ${idx+1})">${isLastQ ? '📊 نتيجة المستوى ▶' : 'السؤال الموالي ▶'}</button>
+      </div>
+    `);
+  }catch(e){
+    showFbError(e, ()=>hostRevealAndWait(levelIdx, idx));
+  }
+}
+
+async function renderLevelResult(levelIdx, isHost){
+  try{
+    const lvl = LEVELS[levelIdx];
+    const scoresSnap = await get(ref(db, 'scores_hist/'+roomCode));
+    const scores = scoresSnap.val() || {};
+    const ranked = Object.entries(scores).sort((a,b)=>Math.min(b[1][lvl.key]||0,20)-Math.min(a[1][lvl.key]||0,20));
+    const isLastLevel = levelIdx >= LEVELS.length-1;
+    const meRow = !isHost ? ranked.find(r=>r[0]===playerName) : null;
+    render(`
+      <div class="center"><span class="level-badge ${lvl.cls}">${lvl.emoji} ${lvl.name}</span></div>
+      <h1>نتائج المستوى 📊</h1>
+      ${!isHost && meRow ? `<div class="card center"><div class="muted">نقطتك فهاد المستوى</div><div class="timer-ring" style="border-color:#c084fc;color:#f0abfc;">${Math.min(meRow[1][lvl.key]||0,20)}</div></div>` : ''}
+      <div class="card">
+        <div class="sub" style="margin-bottom:4px;">الترتيب العام</div>
+        ${ranked.map((r,i)=>`<div class="leader-row ${!isHost && r[0]===playerName ? 'me':''}"><span><span class="rank">${i+1}.</span>${r[0]}</span><b>${Math.min(r[1][lvl.key]||0, campaign[lvl.key].length)} / ${campaign[lvl.key].length}</b></div>`).join('') || '<div class="muted">ما كاين حتى نتيجة بعد</div>'}
+        ${isHost ? `<button class="btn-primary" onclick="${isLastLevel ? 'window.hostShowFinalCeremony()' : 'window.hostStartLevel('+(levelIdx+1)+')'}">${isLastLevel ? '🏆 عرض النتيجة النهائية والفائز' : 'المستوى الموالي ▶'}</button>` : `<div class="muted" style="margin-top:14px;">فانتظار الأستاذ باش يبدا المستوى الموالي...</div>`}
+      </div>
+    `);
+  }catch(e){
+    if(isHost) showFbError(e, ()=>renderLevelResult(levelIdx, isHost));
+  }
+}
+
+async function hostShowFinalCeremony(){
+  try{
+    await update(ref(db, 'rooms_hist/'+roomCode), { levelIdx:LEVELS.length, currentIndex:0, state:'gameEnd', ended:true });
+    renderFinalCeremony(true);
+  }catch(e){
+    showFbError(e, hostShowFinalCeremony);
+  }
+}
+
+async function renderFinalCeremony(isHost){
+  try{
+    const scoresSnap = await get(ref(db, 'scores_hist/'+roomCode));
+    const scores = scoresSnap.val() || {};
+    const capB = campaign.bronze.length, capS = campaign.silver.length, capG = campaign.gold.length;
+    const totalMax = capB + capS + capG;
+    const totals = Object.entries(scores).map(([name,s])=>[name, Math.min(s.bronze||0,capB)+Math.min(s.silver||0,capS)+Math.min(s.gold||0,capG), s]);
+    totals.sort((a,b)=>b[1]-a[1]);
+    const winner = totals[0];
+    render(`
+      <h1>🎉 نتيجة البطولة النهائية 🎉</h1>
+      <div class="trophy">🏆</div>
+      ${winner ? `<div class="winner-name">${winner[0]}</div><div class="muted">الفائز بالبطولة! 🥇</div>` : '<div class="muted">ما كاين حتى نتيجة</div>'}
+      <div class="card">
+        <div class="sub" style="margin-bottom:4px;">الترتيب النهائي (مجموع 3 مستويات، على ${totalMax})</div>
+        ${totals.map((r,i)=>`<div class="leader-row ${!isHost && r[0]===playerName?'me':''}"><span><span class="rank">${i+1}.</span>${i===0?'👑 ':''}${r[0]}</span><b>${r[1]} / ${totalMax}</b></div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:4px;">تفاصيل حسب المستوى</div>
+        ${totals.map(r=>`<div class="leader-row"><span>${r[0]}</span><span style="font-size:.8rem;">🥉${Math.min(r[2].bronze||0,capB)} 🥈${Math.min(r[2].silver||0,capS)} 🥇${Math.min(r[2].gold||0,capG)}</span></div>`).join('')}
+      </div>
+      <button class="btn-secondary" onclick="window.renderHome()">${isHost ? 'بطولة جديدة' : 'رجوع للبداية'}</button>
+    `);
+    launchConfetti();
+  }catch(e){ /* end of game, non-critical if this fails to load, offer home fallback */ 
+    render(`<div class="card center"><div class="muted">وقع خطأ فتحميل النتيجة النهائية</div><button class="btn-secondary" onclick="window.renderHome()">رجوع للبداية</button></div>`);
+  }
+}
+
+// ================= PLAYER =================
+function goJoin(){
+  role='player';
+  render(`
+    <h1>انضم للبطولة</h1>
+    <div class="card">
+      <label>الاسم ديالك</label>
+      <input id="pname" placeholder="مثلا: ياسين">
+      <label>كود الغرفة</label>
+      <input id="pcode" placeholder="مثلا: ABCD" style="text-transform:uppercase">
+      <div id="joinError" class="muted" style="color:#f87171;min-height:18px;"></div>
+      <button class="btn-primary" onclick="window.joinRoom()">دخول ▶</button>
+    </div>
+    <button class="btn-secondary" onclick="window.renderHome()">رجوع</button>
+  `);
+}
+
+async function joinRoom(){
+  unlockAudio();
+  const errEl = document.getElementById('joinError');
+  const btn = document.querySelector('.btn-primary');
+  const name = document.getElementById('pname').value.trim();
+  const code = document.getElementById('pcode').value.trim().toUpperCase();
+  errEl.textContent = '';
+  if(!name || !code){ errEl.textContent = '⚠️ عمر الاسم والكود قبل الدخول'; return; }
+  btn.textContent = 'كنتأكد من الكود...';
+  btn.disabled = true;
+  try{
+    const campaignSnap = await get(ref(db, 'campaigns_hist/'+code));
+    if(!campaignSnap.exists()){
+      errEl.textContent = '⚠️ الكود غير صحيح، تأكد منو مع الأستاذ';
+      btn.textContent = 'دخول ▶'; btn.disabled = false;
+      return;
+    }
+    campaign = campaignSnap.val();
+    playerName = name; roomCode = code;
+    await set(ref(db, 'joins_hist/'+roomCode+'/'+playerName), true);
+    lastSeenIndex=-1; lastSeenState=null; lastSeenLevel=-1; answered=false;
+    renderPlayerWaiting();
+    attachPlayerRoomListener();
+  }catch(e){
+    errEl.textContent = '⚠️ وقع خطأ فالاتصال: ' + (e && e.message ? e.message : e);
+    btn.textContent = 'دخول ▶'; btn.disabled = false;
+  }
+}
+
+function attachPlayerRoomListener(){
+  detachRoomListener();
+  const roomRef = ref(db, 'rooms_hist/'+roomCode);
+  const cb = (snap)=>{
+    const room = snap.val();
+    if(!room) return;
+    if(room.state==='question' && (room.currentIndex !== lastSeenIndex || room.levelIdx !== lastSeenLevel || lastSeenState!=='question')){
+      lastSeenIndex=room.currentIndex; lastSeenLevel=room.levelIdx; lastSeenState='question';
+      answered=false;
+      renderPlayerQuestion(room);
+    } else if(room.state==='reveal' && (lastSeenState!=='reveal' || room.levelIdx!==lastSeenLevel || room.currentIndex!==lastSeenIndex)){
+      lastSeenState='reveal'; lastSeenLevel=room.levelIdx; lastSeenIndex=room.currentIndex;
+      renderPlayerReveal(room);
+    } else if(room.state==='levelResult' && (lastSeenState!=='levelResult' || room.levelIdx!==lastSeenLevel)){
+      lastSeenState='levelResult'; lastSeenLevel=room.levelIdx;
+      renderLevelResult(room.levelIdx, false);
+    } else if(room.state==='gameEnd' && lastSeenState!=='gameEnd'){
+      lastSeenState='gameEnd';
+      detachRoomListener();
+      renderFinalCeremony(false);
+    }
+  };
+  onValue(roomRef, cb);
+  roomListener = {ref:roomRef, cb};
+}
+
+function renderPlayerWaiting(){
+  render(`
+    <h1>فانتظار الأستاذ...</h1>
+    <div class="card center">
+      <div class="muted">مرحبا ${playerName} 👋</div>
+      <div class="muted">البطولة فيها 3 مستويات (🥉🥈🥇)، كل واحد 20 سؤال</div>
+    </div>
+  `);
+}
+
+function renderPlayerQuestion(room){
+  const lvl = LEVELS[room.levelIdx];
+  const q = campaign[lvl.key][room.currentIndex];
+  render(`
+    <div class="center"><span class="level-badge ${lvl.cls}">${lvl.emoji} ${lvl.name}</span></div>
+    <div class="qcount">سؤال ${room.currentIndex+1} / ${campaign[lvl.key].length}</div>
+    <div class="card">
+      <div class="center" style="font-size:1.15rem;font-weight:700;margin-bottom:10px;">
+        ${q.q}
+        <button id="repeatBtn" class="btn-secondary" style="width:auto;display:inline-block;padding:8px 14px;margin-right:8px;">🔊</button>
+      </div>
+      <div id="opts"></div>
+      <button class="btn-primary" id="confirmBtn" disabled>تأكيد الإجابة ✅</button>
+    </div>
+  `);
+  let selectedIdx = null;
+  const optsEl = document.getElementById('opts');
+  const confirmBtn = document.getElementById('confirmBtn');
+  q.options.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='qopt';
+    b.textContent=opt;
+    b.onclick=()=>{
+      if(answered) return;
+      document.querySelectorAll('.qopt').forEach(x=>x.classList.remove('picked'));
+      b.classList.add('picked');
+      selectedIdx = i;
+      confirmBtn.disabled = false;
+    };
+    optsEl.appendChild(b);
+  });
+  confirmBtn.onclick = ()=>{
+    if(selectedIdx===null) return;
+    const btnEl = document.querySelectorAll('.qopt')[selectedIdx];
+    submitAnswer(selectedIdx, btnEl, lvl.key, room.currentIndex, q.correct);
+  };
+  document.getElementById('repeatBtn').onclick = ()=> speakWord(q.word);
+  speakWord(q.word);
+}
+
+async function submitAnswer(choiceIdx, btnEl, levelKey, idx, correctIdx){
+  if(answered) return;
+  answered = true;
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const confirmBtn = document.getElementById('confirmBtn');
+  if(confirmBtn) confirmBtn.disabled = true;
+  btnEl.classList.add('picked');
+  const isCorrect = choiceIdx === correctIdx;
+  if(isCorrect) playCorrectSound(); else playWrongSound();
+  try{
+    await set(ref(db, 'answers_hist/'+roomCode+'/'+levelKey+'/'+idx+'/'+playerName), { choice: choiceIdx, timeMs: Date.now() });
+    const div = document.createElement('div');
+    div.className='muted'; div.style.marginTop='14px';
+    div.style.color = isCorrect ? '#4ade80' : '#f87171';
+    div.style.fontWeight='800';
+    div.textContent = isCorrect ? '✅ إجابة صحيحة!' : '❌ إجابة خاطئة';
+    document.getElementById('opts').appendChild(div);
+  }catch(e){
+    answered = false;
+    document.querySelectorAll('.qopt').forEach(b=>b.disabled=false);
+    if(confirmBtn) confirmBtn.disabled = false;
+    btnEl.classList.remove('picked');
+    const div = document.createElement('div');
+    div.className='muted'; div.style.marginTop='14px'; div.style.color='#f87171';
+    div.textContent='⚠️ ما توصلش الجواب، جرب دوس من جديد';
+    document.getElementById('opts').appendChild(div);
+  }
+}
+
+function renderPlayerReveal(room){
+  const lvl = LEVELS[room.levelIdx];
+  const q = campaign[lvl.key][room.currentIndex];
+  render(`
+    <div class="center"><span class="level-badge ${lvl.cls}">${lvl.emoji} ${lvl.name}</span></div>
+    <h1>الجواب الصحيح ✅</h1>
+    <div class="card center">
+      <div style="font-weight:700;">${q.q}</div>
+      <div style="color:#4ade80;font-weight:800;font-size:1.1rem;margin-top:6px;">${q.options[q.correct]}</div>
+    </div>
+    <div class="muted">فانتظار السؤال الموالي...</div>
+  `);
+}
+
+// expose functions used by inline onclick handlers
+window.renderHome = renderHome;
+window.goHostSetup = goHostSetup;
+window.goHostConfirm = goHostConfirm;
+window.createRoom = createRoom;
+window.hostStartLevel = hostStartLevel;
+window.hostAdvanceToQuestion = hostAdvanceToQuestion;
+window.hostRevealAndWait = hostRevealAndWait;
+window.hostShowFinalCeremony = hostShowFinalCeremony;
+window.goJoin = goJoin;
+window.joinRoom = joinRoom;
+
+renderHome();
+
+// register service worker for installability
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
